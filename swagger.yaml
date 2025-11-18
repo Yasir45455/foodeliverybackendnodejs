@@ -1,0 +1,315 @@
+openapi: 3.0.3
+info:
+  title: Food API
+  description: API documentation for the Food App
+  version: 1.0.0
+servers:
+  - url: https://food-psi-sand.vercel.app
+    description: Production server
+
+paths:
+  /products:
+    get:
+      summary: Get all products
+      responses:
+        '200':
+          description: List of products
+          content:
+            application/json:
+              example:
+                - _id: "product_id"
+                  name: "Grilled Fish & Chips"
+                  price: 18
+                  category: "Fish & Chips"
+                  subCategory: ""
+                  shortDescription: "Delicious grilled fish served with crispy chips"
+    post:
+      summary: Add a new product
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              name: "Grilled Fish & Chips"
+              price: 18
+              category: "Fish & Chips"
+              subCategory: ""
+              shortDescription: "Delicious grilled fish served with crispy chips"
+      responses:
+        '201':
+          description: Product created successfully
+  /products/{id}:
+    put:
+      summary: Edit product by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              name: "Edited Fish & Chips"
+              price: 20
+              category: "Fish & Chips"
+              subCategory: ""
+              shortDescription: "Delicious grilled fish with extra spices"
+      responses:
+        '200':
+          description: Product updated successfully
+    delete:
+      summary: Delete product by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Product deleted successfully
+
+  /category:
+    post:
+      summary: Add a new category
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              name: "Fish & Chips"
+      responses:
+        '201':
+          description: Category added successfully
+
+  /category/add-sub-category:
+    post:
+      summary: Add a new subcategory
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              name: "Fried Fish"
+              cat: "651e3f8a1c1234567890abcd"
+      responses:
+        '201':
+          description: Subcategory added successfully
+
+  /category/get:
+    get:
+      summary: Get categories with subcategories
+      responses:
+        '200':
+          description: List of categories and subcategories
+          content:
+            application/json:
+              example:
+                cats:
+                  - _id: "651e3f8a1c1234567890abcd"
+                    name: "Fish & Chips"
+                    __v: 0
+                  - _id: "651e3f8a1c1234567890abce"
+                    name: "Burgers"
+                    __v: 0
+                subCats:
+                  Fish & Chips:
+                    - _id: "651e3f8a1c1234567890abcf"
+                      name: "Fried Fish"
+                      category: "Fish & Chips"
+                      __v: 0
+                  Burgers: []
+
+  /cart/add-Prouct-to-cart/{product_id}/{quantity}:
+    post:
+      summary: Add product to cart
+      parameters:
+        - name: product_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: quantity
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Product added to cart
+          content:
+            application/json:
+              example:
+                cart:
+                  _id: "651e4f8a1c1234567890abcd"
+                  guestId: "123e4567-e89b-12d3-a456-426614174000"
+                  products:
+                    - product_ID: "651e3f8a1c1234567890abcd"
+                      quantity: 2
+                      _id: "651e4f8a1c1234567890abce"
+                  __v: 0
+                guestId: "123e4567-e89b-12d3-a456-426614174000"
+
+  /cart/get-cart/{guestId}:
+    get:
+      summary: Get cart by guest ID
+      parameters:
+        - name: guestId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Cart details
+          content:
+            application/json:
+              example:
+                _id: "651e4f8a1c1234567890abcd"
+                guestId: "123e4567-e89b-12d3-a456-426614174000"
+                products:
+                  - product_ID:
+                      _id: "651e3f8a1c1234567890abcd"
+                      name: "Fish & Chips"
+                      description: "Chikn chips & chips"
+                      category: "Fish & Chips"
+                      subCategory: "Fried Fish"
+                      height: 10
+                      width: 5
+                      weight: 200
+                      sku: "FC123"
+                      images: ["url1", "url2"]
+                      price: 15
+                    quantity: 2
+                    _id: "651e4f8a1c1234567890abce"
+                __v: 0
+
+  /cart/remove-product-from-cart/{product_id}:
+    delete:
+      summary: Remove product from cart
+      parameters:
+        - name: product_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Product removed from cart
+          content:
+            application/json:
+              example:
+                _id: "651e4f8a1c1234567890abcd"
+                guestId: "123e4567-e89b-12d3-a456-426614174000"
+                products: []
+                __v: 0
+
+  /address/add-address:
+    post:
+      summary: Add a new address
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              guest_id: "123e4567-e89b-12d3-a456-426614174000"
+              email: "user@example.com"
+              house_no: "123"
+              street: "Main Street"
+              city: "New York"
+              postcode: "10001"
+              instructions: "Leave at the doorstep"
+              appartment_name: "Green Apartments"
+              floor: "3"
+              building_name: "Sunrise Building"
+              entry_code: "4567"
+              business_name: "Tech Corp"
+              hotel_name: "Grand Hotel"
+              business: false
+      responses:
+        '201':
+          description: Address added successfully
+
+  /address/get-address/{user_id}:
+    get:
+      summary: Get addresses by user ID
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of addresses
+
+  /address/get-address/guest/{guest_id}:
+    get:
+      summary: Get addresses by guest ID
+      parameters:
+        - name: guest_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of addresses
+
+  /orders/create:
+    post:
+      summary: Create a new order
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              address_id: "651e5f8a1c1234567890abcd"
+              products:
+                - product_ID: "651e3f8a1c1234567890abcd"
+                  quantity: 2
+                - product_ID: "651e3f8a1c1234567890abce"
+                  quantity: 1
+              total_with_tip: 50
+      responses:
+        '201':
+          description: Order created successfully
+
+  /orders/{order_id}:
+    get:
+      summary: Get order by ID
+      parameters:
+        - name: order_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Order details
+
+  /orders/list:
+    get:
+      summary: Get all orders
+      responses:
+        '200':
+          description: List of orders
+
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        name:
+          type: string
+        price:
+          type: number
+        category:
+          type: string
+        subCategory:
+          type: string
+        shortDescription:
+          type: string
