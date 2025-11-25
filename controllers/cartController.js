@@ -8,7 +8,7 @@ const { v4: uuidv4 } = require('uuid');
 
 
 async function addProductToCart(req, res) {
-    const { product_id, quantity } = req.body;
+    const { product_id, quantity, guestId: bodyGuestId } = req.body; // Extract guestId from body if provided
     const parsedQuantity = parseInt(quantity);
     if (!Number.isInteger(parsedQuantity) || parsedQuantity < 0) {
         return res.status(400).json({ error: 'Quantity must be a non-negative integer' });
@@ -18,8 +18,8 @@ async function addProductToCart(req, res) {
         if (!product) {
             return res.status(404).json({ error: 'Product not found' });
         }
-        // Get guestId from headers or create a new one
-        let guestId = req.headers['guest-id'] || null;
+        // Get guestId: prefer body, then headers, or create a new one
+        let guestId = bodyGuestId || req.headers['guest-id'] || null;
         if (!guestId) {
             guestId = uuidv4(); // Generate unique guest ID
         }
@@ -51,7 +51,6 @@ async function addProductToCart(req, res) {
         res.status(500).json({ error: err.message });
     }
 }
-
 
 async function getCart(req, res) {
     try {
